@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мишино и Кошкино — Инфо-портал</title>
+<style>
+  :root {
+    --bg: #f7f9f5; --text: #2c3e2e; --card-bg: #fff; --header-bg: #2d5a3d; 
+    --primary: #4a7c59; --border: #eef5ec; --accent: #fc3f1d;
+  }
+  [data-theme="dark"] {
+    --bg: #121814; --text: #d1e0d5; --card-bg: #1c2620; --header-bg: #1a2e22; 
+    --primary: #6b9a77; --border: #2a3d31; --accent: #ff5733;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, 'Segoe UI', Tahoma, sans-serif; line-height: 1.6; color: var(--text); background: var(--bg); scroll-behavior: smooth; transition: background 0.3s, color 0.3s; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+  /* ШАПКА */
+  header { background: var(--header-bg); color: #fff; padding: 12px 0; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  header .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .logo { font-size: 1.4em; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+  
+  .menu-toggle { display: none; background: none; border: none; color: white; font-size: 1.5em; cursor: pointer; }
+  nav { display: flex; flex-wrap: wrap; align-items: center; }
+  nav a { color: #fff; text-decoration: none; margin-left: 20px; font-size: 0.95em; opacity: 0.9; font-weight: 500; transition: 0.2s; }
+  nav a:hover { opacity: 1; color: #b3d4b8; }
+  
+  .header-tools { display: flex; align-items: center; gap: 10px; margin-left: 20px; }
+  .search-box { padding: 6px 12px; border-radius: 20px; border: none; background: rgba(255,255,255,0.15); color: white; outline: none; font-size: 0.9em; width: 140px; transition: 0.3s; }
+  .search-box:focus { width: 180px; background: rgba(255,255,255,0.25); }
+  .search-box::placeholder { color: rgba(255,255,255,0.6); }
+  .theme-btn { background: none; border: none; color: white; font-size: 1.3em; cursor: pointer; padding: 5px; transition: transform 0.2s; }
+  .theme-btn:hover { transform: scale(1.1); }
+
+  /* БАННЕР */
+  .hero { 
+    background: linear-gradient(135deg, #3a6b4a, #5a8a68); 
+    color: #fff; 
+    text-align: center; 
+    padding: 80px 20px 60px; 
+    position: relative; 
+    background-image: url('banner.png');
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(45, 90, 61, 0.75);
+    z-index: 1;
+  }
+
+  .hero .container { position: relative; z-index: 2; }
+  
+  .hero h1 { font-size: 3em; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+  .hero p { font-size: 1.2em; opacity: 0.95; margin-bottom: 30px; }
+  
+  .widgets { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+  .widget { background: rgba(255,255,255,0.15); backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.3); padding: 15px 25px; border-radius: 12px; display: flex; align-items: center; gap: 15px; }
+  .widget .icon { font-size: 2.5em; }
+  .widget .info { text-align: left; }
+  .widget .val { font-size: 1.4em; font-weight: bold; display: block; }
+  .widget .lbl { font-size: 0.8em; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; }
+  .widget-sub { font-size: 0.75em; opacity: 0.8; display: block; margin-top: 4px; }
+
+  /* СЕКЦИИ */
+  section { padding: 60px 0; }
+  section:nth-child(even) { background: var(--card-bg); }
+  h2 { font-size: 1.8em; color: var(--primary); margin-bottom: 25px; padding-bottom: 10px; border-bottom: 4px solid var(--primary); display: inline-block; }
+  p { margin-bottom: 15px; }
+
+  /* СЕТКИ И КАРТОЧКИ */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .card { background: var(--card-bg); border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-top: 4px solid var(--primary); transition: transform 0.2s; }
+  .card:hover { transform: translateY(-5px); }
+  .card h3 { color: var(--primary); margin-bottom: 12px; font-size: 1.2em; display: flex; align-items: center; gap: 8px; }
+  .card ul { margin: 10px 0 0 20px; }
+  .card li { margin-bottom: 6px; }
+
+  /* НОВОСТИ */
+  .news-item { background: var(--card-bg); border-radius: 10px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 5px solid var(--primary); }
+  .news-item h3 { color: var(--primary); margin-bottom: 5px; font-size: 1.2em; }
+  .news-item .date { font-size: 0.85em; color: #7a8f7c; margin-bottom: 10px; font-weight: bold; }
+  
+  /* ФОТОГАЛЕРЕЯ */
+  .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+  .gallery figure { background: var(--card-bg); border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .gallery img { width: 100%; display: block; aspect-ratio: 4/3; object-fit: cover; transition: transform 0.3s; }
+  .gallery img:hover { transform: scale(1.05); }
+  .gallery figcaption { padding: 10px; font-size: 0.9em; color: var(--text); text-align: center; font-weight: 500; }
+  
+  .empty { background: var(--border); border: 2px dashed #b9d0bd; border-radius: 10px; padding: 30px; text-align: center; color: #7a8f7c; font-style: italic; }
+
+  /* ПОДСВЕТКА ПОИСКА */
+  .search-highlight { background-color: #ffeb3b; color: #000; padding: 2px; border-radius: 3px; transition: background 0.5s; }
+
+  /* КНОПКА ВВЕРХ */
+  #toTop { position: fixed; bottom: 30px; right: 30px; background: var(--primary); color: #fff; border: none; width: 50px; height: 50px; border-radius: 50%; font-size: 1.5em; cursor: pointer; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: 0.3s; z-index: 999; }
+  #toTop:hover { background: #2d5a3d; transform: translateY(-3px); }
+
+  /* ПОДВАЛ */
+  footer { background: var(--header-bg); color: #d9e6db; padding: 40px 0 20px; font-size: 0.9em; }
+  footer .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-bottom: 30px; }
+  footer h4 { color: #fff; margin-bottom: 15px; font-size: 1.1em; }
+  footer ul { list-style: none; }
+  footer li { margin-bottom: 8px; }
+  footer a { color: #b3d4b8; text-decoration: none; }
+  footer a:hover { text-decoration: underline; color: #fff; }
+  .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); color: #b3d4b8; }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 2em; }
+    .widgets { flex-direction: column; align-items: center; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .menu-toggle { display: block; }
+    nav { display: none; width: 100%; flex-direction: column; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 10px; margin-top: 10px; }
+    nav.active { display: flex; }
+    nav a { margin: 8px 0; padding: 8px 15px; border-radius: 5px; }
+    .header-tools { margin-left: 0; width: 100%; justify-content: space-between; margin-top: 10px; }
+    .search-box { width: 100%; max-width: 200px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="logo">🌲 Мишино · Кошкино</div>
+    <button class="menu-toggle" onclick="document.querySelector('nav').classList.toggle('active')">☰</button>
+    <nav>
+      <a href="#news">Новости</a>
+      <a href="#transport">Транспорт</a>
+      <a href="#photos">Фото</a>
+      <a href="#map">Карта</a>
+      <a href="#contacts">Контакты</a>
+      <div class="header-tools">
+        <input type="text" id="searchInput" class="search-box" placeholder="Поиск...">
+        <button class="theme-btn" id="themeToggle" title="Переключить тему">🌙</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="container">
+    <h1>Мишино и Кошкино</h1>
+    <p>Информационный портал для местных жителей</p>
+    
+    <div class="widgets" id="weather">
+      <div class="widget">
+        <div class="icon">🕒</div>
+        <div class="info">
+          <span class="val" id="clock">--:--:--</span>
+          <span class="lbl">Местное время</span>
+        </div>
+      </div>
+      <div class="widget">
+        <div class="icon" id="weatherIcon">🌡️</div>
+        <div class="info">
+          <span class="val" id="temp">--°C</span>
+          <span class="lbl">Погода</span>
+          <span class="widget-sub" id="weatherDesc">Загрузка...</span>
+        </div>
+      </div>
+      <div class="widget">
+        <div class="icon">💨</div>
+        <div class="info">
+          <span class="val" id="wind">-- м/с</span>
+          <span class="lbl">Ветер</span>
+          <span class="widget-sub" id="humidity">Влажность: --%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="news">
+  <div class="container">
+    <h2>Новости и объявления</h2>
+    <div id="newsList"><div class="empty">Загрузка…</div></div>
+  </div>
+</section>
+
+<section id="transport">
+  <div class="container">
+    <h2>Расписание и инфраструктура</h2>
+    <div class="grid-3">
+      <div class="card">
+        <h3>🚌 Автобус</h3>
+        <p>Маршрут <strong>Вистино — Кошкино — Мишино</strong>.</p>
+        <ul>
+          <li>Пн-Пт: 07:30, 14:00, 18:30</li>
+          <li>Сб-Вс: 09:00, 16:00</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🚂 Электричка</h3>
+        <p>Ближайшая платформа — <strong>Косколово</strong> (около 10 км).</p>
+        <ul>
+          <li>До Санкт-Петербурга: ~2.5 часа</li>
+          <li>До Кингисеппа: ~40 минут</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🏥 Важное</h3>
+        <ul>
+          <li><strong>ФАП:</strong> деревня Вистино</li>
+          <li><strong>Магазин:</strong> Кошкино (продукты)</li>
+          <li><strong>Пожарная часть:</strong> 112</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="photos">
+  <div class="container">
+    <h2>Фотогалерея</h2>
+    <div id="photoList"><div class="empty">Загрузка…</div></div>
+  </div>
+</section>
+
+<section id="map">
+  <div class="container">
+    <h2>Карта и транспорт</h2>
+    <p>Сойкинский полуостров. Нажмите кнопку, чтобы открыть карту с автобусами в Яндекс Картах.</p>
+    
+    <div style="margin-bottom: 20px;">
+      <a href="https://yandex.ru/maps/11148/kingisepp/?ll=28.500000%2C59.750000&z=12&l=tr" 
+         target="_blank" 
+         style="display: inline-block; background: #fc3f1d; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 10px rgba(252,63,29,0.3);">
+         🚌 Открыть Яндекс Карты (автобусы)
+      </a>
+    </div>
+
+    <div style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+      <iframe 
+        src="https://yandex.ru/map-widget/v1/?ll=28.500000%2C59.750000&z=12&l=tr" 
+        width="100%" height="450" frameborder="0" allowfullscreen="true" style="border:0;">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<section id="contacts">
+  <div class="container">
+    <h2>Полезные контакты</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>📞 Экстренные службы</h3>
+        <ul>
+          <li><strong>Пожарная охрана:</strong> 101 / 112</li>
+          <li><strong>Полиция:</strong> 102</li>
+          <li><strong>Скорая помощь:</strong> 103</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🏛️ Администрация</h3>
+        <ul>
+          <li><strong>Вистинское поселение:</strong> +7 (81375) ...</li>
+          <li><strong>Староста деревни:</strong> +7 (921) ...</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>🌲 Мишино · Кошкино</h4>
+        <p style="opacity: 0.8; font-size: 0.9em;">Информационный портал для местных жителей.</p>
+      </div>
+      <div>
+        <h4>Разделы</h4>
+        <ul>
+          <li><a href="#news">Новости</a></li>
+          <li><a href="#transport">Транспорт</a></li>
+          <li><a href="#photos">Фото</a></li>
+          <li><a href="#map">Карта</a></li>
+          <li><a href="#contacts">Контакты</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Связь</h4>
+        <ul>
+          <li>📍 Ленинградская обл., Кингисеппский р-н</li>
+          <li>✉️ info@mysite.ru (замените)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Мишино и Кошкино. Все права защищены.</p>
+      <p style="margin-top: 10px;">Powered by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a></p>
+    </div>
+  </div>
+</footer>
+
+<button id="toTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
+
+<script>
+  // 1. ЗАГРУЗКА JSON
+  async function loadJSON(path) {
+    try {
+      const res = await fetch(path + '?v=' + Date.now());
+      if (!res.ok) return [];
+      const data = await res.json();
+      return Array.isArray(data) ? data : [];
+    } catch (e) { return []; }
+  }
+  function esc(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  function renderNews(items) {
+    const box = document.getElementById('newsList');
+    if (!items.length) { box.innerHTML = '<div class="empty">Пока пусто. Новостей нет.</div>'; return; }
+    items.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+    box.innerHTML = items.map(n => `
+      <div class="news-item">
+        ${n.date ? `<div class="date">📅 ${esc(n.date)}</div>` : ''}
+        <h3>${esc(n.title || '')}</h3>
+        <p>${esc(n.text || '')}</p>
+      </div>`).join('');
+  }
+
+  function renderPhotos(items) {
+    const box = document.getElementById('photoList');
+    if (!items.length) { box.innerHTML = '<div class="empty">Пока пусто. Фотографий нет.</div>'; return; }
+    box.innerHTML = '<div class="gallery">' + items.map(p => `
+      <figure>
+        <img src="${esc(p.src || '')}" alt="${esc(p.caption || '')}" loading="lazy">
+        ${p.caption ? `<figcaption>${esc(p.caption)}</figcaption>` : ''}
+      </figure>`).join('') + '</div>';
+  }
+
+  // 2. ЧАСЫ
+  function updateClock() {
+    document.getElementById('clock').textContent = new Date().toLocaleTimeString('ru-RU', { timeZone: 'Europe/Moscow' });
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  // 3. ПОГОДА
+  async function fetchWeather() {
+    try {
+      const lat = 59.75, lon = 28.5;
+      const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code`);
+      const data = await res.json();
+      if (data.current) {
+        const c = data.current;
+        document.getElementById('temp').textContent = Math.round(c.temperature_2m) + '°C';
+        document.getElementById('wind').textContent = c.wind_speed_10m + ' м/с';
+        document.getElementById('humidity').textContent = 'Влажность: ' + c.relative_humidity_2m + '%';
+        
+        const codes = { 0: 'Ясно ☀️', 1: 'Малооблачно 🌤️', 2: 'Облачно ⛅', 3: 'Пасмурно ☁️', 45: 'Туман 🌫️', 61: 'Дождь 🌧️', 71: 'Снег ❄️', 95: 'Гроза ⛈️' };
+        document.getElementById('weatherDesc').textContent = codes[c.weather_code] || 'Погода 🌍';
+        
+        const iconMap = { 0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️', 45: '🌫️', 61: '🌧️', 71: '❄️', 95: '⛈️' };
+        document.getElementById('weatherIcon').textContent = iconMap[c.weather_code] || '🌡️';
+      }
+    } catch (e) {
+      document.getElementById('weatherDesc').textContent = 'Ошибка загрузки';
+    }
+  }
+  fetchWeather();
+
+  // 4. ПЕРЕКЛЮЧАТЕЛЬ ТЕМ
+  const themeBtn = document.getElementById('themeToggle');
+  const currentTheme = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', currentTheme);
+  themeBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+
+  themeBtn.addEventListener('click', () => {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const newTheme = isDark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    themeBtn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+  });
+
+  // 5. ЖИВОЙ ПОИСК
+  document.getElementById('searchInput').addEventListener('input', function(e) {
+    const query = e.target.value.toLowerCase().trim();
+    document.querySelectorAll('.search-highlight').forEach(el => { el.outerHTML = el.innerHTML; });
+    if (query.length < 2) return;
+    
+    const sections = document.querySelectorAll('section, .hero, footer');
+    let found = false;
+    
+    sections.forEach(sec => {
+      const text = sec.innerText.toLowerCase();
+      if (text.includes(query)) {
+        if (!found) { sec.scrollIntoView({ behavior: 'smooth', block: 'center' }); found = true; }
+        const walker = document.createTreeWalker(sec, NodeFilter.SHOW_TEXT, null, false);
+        let node; const nodesToReplace = [];
+        while (node = walker.nextNode()) {
+          if (node.nodeValue.toLowerCase().includes(query) && !['SCRIPT','STYLE'].includes(node.parentElement.tagName)) {
+            nodesToReplace.push(node);
+          }
+        }
+        nodesToReplace.forEach(n => {
+          const span = document.createElement('span');
+          const regex = new RegExp(`(${query})`, 'gi');
+          span.innerHTML = n.nodeValue.replace(regex, '<span class="search-highlight">$1</span>');
+          n.parentNode.replaceChild(span, n);
+        });
+      }
+    });
+  });
+
+  // 6. КНОПКА ВВЕРХ
+  window.addEventListener('scroll', () => {
+    document.getElementById('toTop').style.display = window.scrollY > 300 ? 'block' : 'none';
+  });
+
+  // ИНИЦИАЛИЗАЦИЯ
+  (async () => {
+    const [news, photos] = await Promise.all([loadJSON('news.json'), loadJSON('photos.json')]);
+    renderNews(news);
+    renderPhotos(photos);
+  })();
+</script>
+
+</body>
+</html>
